@@ -264,13 +264,14 @@ class Seq2Seq(nn.Module):
                 probs = F.softmax(overvocab/temp)
                 indices = torch.multinomial(probs, 1)
 
-            all_indices.append(indices)
+            all_indices.append(indices.unsqueeze(1))
 
             embedding = self.embedding_decoder(indices)
-            inputs = torch.cat([embedding, hidden.unsqueeze(1)], 2)
+
+            inputs = torch.cat([embedding, hidden], 1)
+            inputs = inputs.unsqueeze(1)
 
         max_indices = torch.cat(all_indices, 1)
-
         return max_indices
 
 
