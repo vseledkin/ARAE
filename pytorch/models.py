@@ -256,13 +256,13 @@ class Seq2Seq(nn.Module):
         for i in range(maxlen):
             output, state = self.decoder(inputs, state)
             overvocab = self.linear(output.squeeze(1))
-
             if not sample:
                 vals, indices = torch.max(overvocab, 1)
             else:
                 # sampling
                 probs = F.softmax(overvocab/temp)
                 indices = torch.multinomial(probs, 1)
+                indices=indices.squeeze(1)
 
             all_indices.append(indices.unsqueeze(1))
 
