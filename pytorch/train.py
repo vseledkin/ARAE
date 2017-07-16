@@ -24,20 +24,22 @@ parser.add_argument('--kenlm_path', type=str, default='../Data/kenlm',
                     help='path to kenlm directory')
 parser.add_argument('--outf', type=str, default='example',
                     help='output directory name')
+parser.add_argument('--save_interval', type=int, default=512,
+                    help='number of iterationns between model savings')
 
 # Data Processing Arguments
-parser.add_argument('--vocab_size', type=int, default=11000,
+parser.add_argument('--vocab_size', type=int, default=32000,
                     help='cut vocabulary down to this size '
                          '(most frequently seen words in train)')
-parser.add_argument('--maxlen', type=int, default=30,
+parser.add_argument('--maxlen', type=int, default=12,
                     help='maximum sentence length')
 parser.add_argument('--lowercase', action='store_true',
                     help='lowercase all text')
 
 # Model Arguments
-parser.add_argument('--emsize', type=int, default=300,
+parser.add_argument('--emsize', type=int, default=128,
                     help='size of word embeddings')
-parser.add_argument('--nhidden', type=int, default=300,
+parser.add_argument('--nhidden', type=int, default=256,
                     help='number of hidden units per layer')
 parser.add_argument('--nlayers', type=int, default=1,
                     help='number of layers')
@@ -530,6 +532,8 @@ for epoch in range(1, args.epochs+1):
                 errG = train_gan_g()
 
         niter_global += 1
+        if niter_global % args.save_interval == 0:
+            save_model()
         if niter_global % 100 == 0:
             print('[%d/%d][%d/%d] Loss_D: %.8f (Loss_D_real: %.8f '
                   'Loss_D_fake: %.8f) Loss_G: %.8f'
