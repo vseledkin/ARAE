@@ -199,8 +199,10 @@ class Seq2Seq(nn.Module):
 
         # normalize to unit ball (l2 norm of 1) - p=2, dim=1
         norms = torch.norm(hidden, 2, 1)
-        hidden = torch.div(hidden, norms.expand_as(hidden))
-
+        #print("hidden", hidden)
+        #print("norms",torch.expand(norms,hidden.size()))
+        #hidden = torch.div(hidden, norms.expand_as(hidden))
+        hidden = torch.div(hidden, norms.unsqueeze(1).expand_as(hidden))
         if noise and self.noise_radius > 0:
             gauss_noise = torch.normal(means=torch.zeros(hidden.size()),
                                        std=self.noise_radius)
